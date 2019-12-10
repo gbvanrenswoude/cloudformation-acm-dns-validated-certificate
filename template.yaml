@@ -70,13 +70,13 @@ Resources:
           from datetime import date, datetime
           def json_serial(obj):
               if isinstance(obj, (datetime, date)):
-                  return obj.isoformat()
+                  return obj.isofortmat()
               raise TypeError ("Type %s not serializable" % type(obj))
           def cfn_response(url, body):
               headers = {'content-type' : '','content-length' : str(len(body))}
               response = requests.put(url,data=body,headers=headers)
           def acm_certificate(event, context):
-              print "Got %s" % json.dumps(event, default=json_serial)
+              print("Got %s" % json.dumps(event, default=json_serial))
               if event['RequestType'] in ['Create','Update']:
                   cfn_response(event['ResponseURL'], _create_acm_certificate(event))
               else:
@@ -101,7 +101,7 @@ Resources:
                   )
                   cert_arn = None
                   for cert in response['CertificateSummaryList']:
-                      print "existing cert: %s" % cert['DomainName']
+                      print("existing cert: %s" % cert['DomainName'])
                       if cert['DomainName'] == dn:
                           cert_arn = cert['CertificateArn']
 
@@ -153,7 +153,7 @@ Resources:
                   response = acm.delete_certificate(
                       CertificateArn=event['PhysicalResourceId']
                   )
-                  print "got response %s" % json.dumps(response, default=json_serial)
+                  print("got response %s" % json.dumps(response, default=json_serial))
                   ret['Status'] = 'SUCCESS'
               except:
                   traceback.print_exc()
@@ -167,7 +167,7 @@ Resources:
       Description: Cloudformation Custom Resource for ACM certs using Route53 approval
       Handler: index.acm_certificate
       MemorySize: 256
-      Runtime: python2.7
+      Runtime: python3.6
       Timeout: 300
       Role:
         Fn::GetAtt: ACMApproverRole.Arn
